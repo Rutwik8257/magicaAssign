@@ -362,6 +362,9 @@ function WorkflowCanvas({ id }: { id: string }) {
                 <button onClick={exportJSON} className="p-1.5 rounded hover:bg-gray-100" title="Export JSON">
                   <FileDown size={14} className="text-gray-500" />
                 </button>
+                <button onClick={importJSON} className="p-1.5 rounded hover:bg-gray-100" title="Import JSON">
+                  <FileDown size={14} className="text-gray-500 rotate-180" />
+                </button>
                 <button
                   onClick={() => setPickerOpen(true)}
                   className="w-7 h-7 rounded-full bg-gray-900 hover:bg-gray-700 flex items-center justify-center transition-colors"
