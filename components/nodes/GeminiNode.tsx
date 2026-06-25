@@ -33,7 +33,7 @@ export const GeminiNode = memo(({ id, data, selected }: NodeProps) => {
   const connectedPrompt = promptEdge ? (() => {
     const sourceNode = nodes.find((n) => n.id === promptEdge.source);
     if (sourceNode?.type === "request-inputs") {
-      const fields = (sourceNode.data as { fields?: Array<{ id: string; value: string }> }).fields || [];
+      const fields = (sourceNode.data as { fields?: Array<{ id: string; type: string; value: string }> }).fields || [];
       const field = promptEdge.sourceHandle ? fields.find((f) => f.id === promptEdge.sourceHandle) : fields.find((f) => f.type === "text_field");
       return field?.value || "";
     }
