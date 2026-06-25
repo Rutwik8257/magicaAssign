@@ -5,7 +5,9 @@
 **NextFlow** is a visual AI workflow builder built with **Next.js** that allows users to create automated AI pipelines using a drag-and-drop canvas.
 
 Inspired by tools like **n8n** and **Make.com**, users can visually connect nodes to build workflows involving **input collection, image processing, AI inference, and response generation**.
-
+Im Pasting the live demo link here as the video is more than 25mb i uploaded in drive and pasting the link here:
+https://drive.google.com/file/d/1hRNARgBqRDu2xmqi3xTjbKhnom_39NrC/view?usp=sharing
+[at some places the voice low due system issue ]
 ---
 
 ## Features
