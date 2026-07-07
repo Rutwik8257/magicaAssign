@@ -1,24 +1,33 @@
-# NextFlow — AI Workflow Builder[https://magica-assign.vercel.app/]
+# NextFlow — AI Workflow Builder
 
-## Overview
+🌐 **Live Demo:** https://magica-assign.vercel.app
 
-**NextFlow** is a visual AI workflow builder built with **Next.js** that allows users to create automated AI pipelines using a drag-and-drop canvas.
+🎥 **Demo Video:** https://drive.google.com/file/d/1t0TWinavFWKZbxrnSe3RMxNVe95E4J1Q/view?usp=sharing
 
-Inspired by tools like **n8n** and **Make.com**, users can visually connect nodes to build workflows involving **input collection, image processing, AI inference, and response generation**.
-Im Pasting the live demo link here as the video is more than 25mb i uploaded in drive and pasting the link here:
-https://drive.google.com/file/d/1hRNARgBqRDu2xmqi3xTjbKhnom_39NrC/view?usp=sharing
-[at some places the voice low due system issue ]
+> **Note:** The demo video is hosted on Google Drive because it exceeds GitHub's 25 MB upload limit. There are a few places where the audio volume is slightly lower due to a system recording issue.
+
 ---
 
-## Features
+# Overview
 
-### Authentication
+**NextFlow** is a visual AI workflow builder built with **Next.js** that enables users to create automated AI pipelines using a drag-and-drop interface.
 
-* Sign Up / Sign In using **Clerk**
-* Protected routes via middleware
-* Dashboard access after login
+Inspired by platforms like **n8n** and **Make.com**, users can visually connect workflow nodes to build pipelines involving user inputs, image processing, AI inference, and response generation.
 
-### Dashboard
+---
+
+# Features
+
+## Authentication
+
+* Clerk Authentication
+* Protected Routes
+* Secure Sign Up / Sign In
+* Automatic Dashboard Redirect after login
+
+---
+
+## Dashboard
 
 Users can:
 
@@ -27,6 +36,7 @@ Users can:
 * Open existing workflows
 * Rename workflows
 * Delete workflows
+* **Load Sample Workflow** (pre-built workflow matching the assignment specification)
 
 ---
 
@@ -34,123 +44,200 @@ Users can:
 
 Built using **React Flow** with support for:
 
-* Drag, zoom, and pan
-* Node connections with type validation
-* Cycle detection to prevent circular flows
-* Auto-save every **1.5 seconds**
-* Undo / Redo (**Ctrl+Z / Ctrl+Y**)
-* MiniMap and grid background
+* Drag, Zoom & Pan
+* Type-safe node connections
+* Cycle detection
+* Auto-save every 1.5 seconds
+* Undo / Redo (Ctrl + Z / Ctrl + Y)
+* MiniMap
+* Grid Background
 
 ---
 
-## Node Types
+# Supported Nodes
 
-### Request Inputs
+## Request Inputs
 
-Workflow entry point supporting:
+Supports:
 
-* **Text fields**
-* **Image uploads** (via Transloadit)
+* Text Fields
+* Image Uploads (Transloadit)
 
 Users can dynamically add or remove input fields.
 
-### Crop Image
+---
+
+## Crop Image
 
 * Accepts image input
-* Crops images using percentage coordinates
-* Processed server-side using **Sharp**
+* Crops using percentage coordinates
+* Processed server-side using Sharp
+* Dynamic parameter handles for X, Y, Width and Height
 
-### Gemini 3.1 Pro
+---
 
-AI processing node that:
+## Gemini AI Node
 
+* Uses Google Gemini API
 * Accepts prompt + optional image
-* Sends requests to **Google Gemini API**
-* Returns AI-generated text response
+* Supports multimodal generation
+* Configurable model settings
+* Returns AI-generated text
 
-Supports configurable model settings.
+---
 
-### Response
+## Response Node
 
-Displays final workflow output:
+Displays:
 
-* Text
+* Generated text
 * Images
 
 ---
 
-## Workflow Execution
+# Workflow Execution
 
 Supports:
 
-* **Full workflow run**
-* **Single node execution**
-* **Multi-node execution**
+* Full Workflow Execution
+* Single Node Execution
+* Multi-Node / Selective Execution
 
-During execution, active nodes show visual indicators and outputs are displayed inline.
+During execution:
+
+* Running nodes display visual animations
+* Outputs appear directly inside nodes
+* DAG-based execution ensures dependent nodes execute only after required inputs become available
 
 ---
 
-## Run History
+# Run History
 
-History panel stores:
+Every execution is stored.
 
-* Run status
-* Execution scope
+History includes:
+
+* Status
+* Execution Scope
 * Duration
-* Node-wise output previews
+* Node-wise Outputs
 
-Useful for debugging and analysis.
-
----
-
-## Import / Export
-
-* Export workflows as **JSON**
-* Import saved workflow files
+Useful for debugging and reviewing previous runs.
 
 ---
 
-## Backend
+# Import / Export
 
-* **PostgreSQL (Neon)**
-* **Prisma v7**
-* Models: Workflow, WorkflowRun, NodeRun
-* REST APIs for CRUD and execution
+* Export workflows as JSON
+* Import workflows from JSON
 
----
-
-## Current Limitations
-
-### Gemini API Rate Limits
-
-Gemini integration is fully implemented, but live demos may fail due to free-tier quota restrictions:
-
-* 15 requests/minute
-* 1M tokens/day
-
-This is a quota limitation, not a code issue.
-
-### Blob URL Limitation
-
-Local browser blob URLs cannot be processed server-side.
-
-To solve this, images are uploaded via **Transloadit**, which provides hosted URLs for workflow execution.
+Allows workflows to be shared and backed up.
 
 ---
 
-## Tech Stack
+# Backend
 
-| Layer            | Technology        |
-| ---------------- | ----------------- |
-| Framework        | Next.js 16        |
-| Auth             | Clerk             |
-| Database         | Neon PostgreSQL   |
-| ORM              | Prisma            |
-| Canvas           | React Flow        |
-| AI               | Google Gemini API |
-| Image Processing | Sharp             |
-| Uploads          | Transloadit       |
-| State            | Zustand + Zundo   |
-| Background Jobs  | Trigger.dev       |
-| Deployment       | Vercel            |
+* Neon PostgreSQL
+* Prisma v7
+* Workflow
+* WorkflowRun
+* NodeRun
+
+REST APIs handle workflow CRUD operations and execution.
+
+---
+
+# Recent Improvements
+
+The following feedback has been addressed in the latest version:
+
+### ✅ Sample Workflow Added
+
+A **Load Sample Workflow** button has been added to the dashboard.
+
+It automatically creates the complete workflow described in the assignment with all nodes and connections already configured.
+
+---
+
+### ✅ Gemini Integration Updated
+
+The Gemini node has been updated to use **Gemini 2.5 Flash**.
+
+The previous demo occasionally failed because the **Google Gemini Free Tier** enforces strict rate limits (15 requests/minute). This was a quota limitation rather than an implementation issue.
+
+The integration itself is fully implemented and functional.
+
+---
+
+### ✅ Crop Image Handles Improved
+
+Each Crop Image parameter now includes a clearly visible colored connection handle for:
+
+* X Position
+* Y Position
+* Width
+* Height
+
+making dynamic connections much easier to understand.
+
+---
+
+### ✅ Single Node & Selective Execution Demonstrated
+
+Each workflow node includes its own **Run** button for executing individual nodes.
+
+Users can also:
+
+* Shift-select multiple nodes
+* Execute only selected nodes
+
+This enables faster debugging without running the complete workflow.
+
+---
+
+# Current Limitations
+
+## Gemini API Rate Limits
+
+Google Gemini Free Tier limits:
+
+* 15 Requests / Minute
+* 1 Million Tokens / Day
+
+If these limits are exceeded, requests may fail.
+
+This is a Google API quota limitation and **not a code issue**.
+
+---
+
+## Blob URL Limitation
+
+Browser blob URLs cannot be accessed by the server.
+
+To solve this, uploaded images are first sent to **Transloadit**, which provides publicly accessible HTTPS URLs used during workflow execution.
+
+---
+
+# Tech Stack
+
+| Layer            | Technology              |
+| ---------------- | ----------------------- |
+| Framework        | Next.js 16 (App Router) |
+| Authentication   | Clerk                   |
+| Database         | Neon PostgreSQL         |
+| ORM              | Prisma v7               |
+| Canvas           | React Flow              |
+| AI               | Google Gemini 2.5 Flash |
+| Image Processing | Sharp                   |
+| Image Upload     | Transloadit             |
+| State Management | Zustand + Zundo         |
+| Background Jobs  | Trigger.dev             |
+| Deployment       | Vercel                  |
+
+---
+
+# Project Links
+
+* **Live Application:** https://magica-assign.vercel.app
+* **GitHub Repository:** https://github.com/Rutwik8257/magicaAssign
+* **Demo Video:** https://drive.google.com/file/d/1t0TWinavFWKZbxrnSe3RMxNVe95E4J1Q/view?usp=sharing
