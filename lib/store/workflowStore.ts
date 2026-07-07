@@ -99,7 +99,8 @@ export const useWorkflowStore = create<WorkflowState>()(
                     if (nr.nodeType === "crop-image") return { ...n, data: { ...n.data, outputImage: nr.output } };
                     if (nr.nodeType === "response") {
                       const out = nr.output as Record<string, unknown>;
-                      return { ...n, data: { ...n.data, results: Object.entries(out).map(([sourceId, value]) => ({ sourceId, label: sourceId, value: typeof value === "string" ? value : JSON.stringify(value ?? "") })) } };
+                      const labelMap: Record<string, string> = { "gemini": "gemini_3_1_pro", "crop-image": "crop_image", "request-inputs": "request_inputs" };
+                      return { ...n, data: { ...n.data, results: Object.entries(out).map(([sourceId, value]) => { const sn = get().nodes.find((x) => x.id === sourceId); const label = labelMap[sn?.type || ""] || sn?.type || sourceId; return { sourceId, label, value: typeof value === "string" ? value : JSON.stringify(value ?? "") }; }) } };
                     }
                     return n;
                   }),

@@ -223,13 +223,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
               let prompt = data.prompt || "";
               if (promptEdge) {
                 const sourceOutput = outputs[promptEdge.source];
-                if (promptEdge.sourceHandle && typeof sourceOutput === "object" && sourceOutput !== null) {
+                // Case 1: source output is a plain string (e.g. Gemini response)
+                if (typeof sourceOutput === "string" && sourceOutput) {
+                  prompt = sourceOutput;
+                // Case 2: source output is an object with a field key (e.g. request-inputs)
+                } else if (promptEdge.sourceHandle && typeof sourceOutput === "object" && sourceOutput !== null) {
                   prompt = (sourceOutput as Record<string, string>)[promptEdge.sourceHandle] || prompt;
-                } else if (typeof sourceOutput === "string") {
-                  prompt = sourceOutput || prompt;
-                }
-                // Fallback: read from source node data or inputValues directly
-                if (!prompt || prompt === data.prompt) {
+                } else {
+                  // Fallback: read directly from source node data or inputValues
                   if (promptEdge.sourceHandle) {
                     prompt = (inputValues[promptEdge.sourceHandle] as string) || prompt;
                   }
@@ -249,10 +250,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
               const imageUrls = imageEdges.map((e) => {
                 let url = "";
                 const sourceOutput = outputs[e.source];
-                if (e.sourceHandle && typeof sourceOutput === "object" && sourceOutput !== null) {
-                  url = (sourceOutput as Record<string, string>)[e.sourceHandle] || "";
-                } else if (typeof sourceOutput === "string") {
+                // Crop node outputs a plain string (base64 data URL)
+                if (typeof sourceOutput === "string") {
                   url = sourceOutput;
+                } else if (e.sourceHandle && typeof sourceOutput === "object" && sourceOutput !== null) {
+                  url = (sourceOutput as Record<string, string>)[e.sourceHandle] || "";
                 }
                 if (!url && e.sourceHandle) url = (inputValues[e.sourceHandle] as string) || "";
                 return url;
@@ -261,15 +263,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
               // Call Gemini directly
               const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!);
               const model = genAI.getGenerativeModel({
-                model: data.model || "gemini-1.5-flash-latest",
+                model: data.model || "gemini-2.5-flash",
                 systemInstruction: data.systemPrompt,
                 generationConfig: { temperature: data.temperature ?? 0.7, maxOutputTokens: data.maxTokens ?? 2048 },
               });
               const contentParts: Array<string | { inlineData: { mimeType: string; data: string } }> = [prompt];
               for (const url of imageUrls) {
-                const res = await fetch(url);
-                const buf = await res.arrayBuffer();
-                contentParts.push({ inlineData: { mimeType: res.headers.get("content-type") || "image/jpeg", data: Buffer.from(buf).toString("base64") } });
+                if (url.startsWith("data:")) {
+                  const [meta, b64] = url.split(",");
+                  const mimeType = meta.split(":")[1].split(";")[0];
+                  contentParts.push({ inlineData: { mimeType, data: b64 } });
+                } else {
+                  const res = await fetch(url);
+                  const buf = await res.arrayBuffer();
+                  contentParts.push({ inlineData: { mimeType: res.headers.get("content-type") || "image/jpeg", data: Buffer.from(buf).toString("base64") } });
+                }
               }
               let output: string;
               try {

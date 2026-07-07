@@ -16,7 +16,7 @@ export const geminiTask = task({
   run: async (payload: GeminiInput): Promise<{ response: string }> => {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!);
     const model = genAI.getGenerativeModel({
-      model: payload.model || "gemini-1.5-pro",
+      model: payload.model || "gemini-2.5-flash",
       systemInstruction: payload.systemPrompt,
       generationConfig: {
         temperature: payload.temperature ?? 0.7,

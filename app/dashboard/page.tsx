@@ -34,6 +34,12 @@ export default function DashboardPage() {
     setLoading(false);
   }
 
+  async function loadSampleWorkflow() {
+    const res = await fetch("/api/seed", { method: "POST" });
+    const data = await res.json() as { workflow: Workflow };
+    router.push(`/workflow/${data.workflow.id}`);
+  }
+
   async function createWorkflow() {
     const res = await fetch("/api/workflows", {
       method: "POST",
@@ -91,13 +97,22 @@ export default function DashboardPage() {
                 {user?.firstName ? `Welcome back, ${user.firstName}` : "Your AI workflows"}
               </p>
             </div>
-            <button
-              onClick={createWorkflow}
-              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              <Plus size={16} />
-              New Workflow
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={loadSampleWorkflow}
+                className="flex items-center gap-2 border border-purple-300 text-purple-700 hover:bg-purple-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                <Zap size={16} />
+                Load Sample Workflow
+              </button>
+              <button
+                onClick={createWorkflow}
+                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                <Plus size={16} />
+                New Workflow
+              </button>
+            </div>
           </div>
 
           {loading ? (

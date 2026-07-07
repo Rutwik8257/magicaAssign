@@ -236,10 +236,11 @@ function WorkflowCanvas({ id }: { id: string }) {
               updateNodeData(nr.nodeId, { outputImage: nr.output as string });
             } else if (nr.nodeType === "response") {
               const out = nr.output as Record<string, unknown>;
+              const labelMap: Record<string, string> = { "gemini": "gemini_3_1_pro", "crop-image": "crop_image", "request-inputs": "request_inputs", "response": "response" };
               const results = Object.entries(out).map(([sourceId, value]) => {
                 const strValue = typeof value === "string" ? value : JSON.stringify(value ?? "");
                 const sourceNode = nodes.find((n) => n.id === sourceId);
-                const label = sourceNode?.type || sourceId;
+                const label = labelMap[sourceNode?.type || ""] || sourceNode?.type || sourceId;
                 return { sourceId, label, value: strValue };
               });
               updateNodeData(nr.nodeId, { results });

@@ -17,7 +17,7 @@ interface GeminiNodeData {
   [key: string]: unknown;
 }
 
-const MODELS = ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest", "gemini-2.0-flash-exp", "gemini-pro"];
+const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
 
 export const GeminiNode = memo(({ id, data, selected }: NodeProps) => {
   const nodeData = data as GeminiNodeData;
@@ -28,7 +28,7 @@ export const GeminiNode = memo(({ id, data, selected }: NodeProps) => {
     updateNodeData(id, { [key]: value });
   }, [id, updateNodeData]);
 
-  // Resolve connected prompt value from edge
+  // Resolve connected prompt value from edge (supports request-inputs and gemini sources)
   const promptEdge = edges.find((e) => e.target === id && e.targetHandle === "prompt");
   const connectedPrompt = promptEdge ? (() => {
     const sourceNode = nodes.find((n) => n.id === promptEdge.source);
@@ -36,6 +36,9 @@ export const GeminiNode = memo(({ id, data, selected }: NodeProps) => {
       const fields = (sourceNode.data as { fields?: Array<{ id: string; type: string; value: string }> }).fields || [];
       const field = promptEdge.sourceHandle ? fields.find((f) => f.id === promptEdge.sourceHandle) : fields.find((f) => f.type === "text_field");
       return field?.value || "";
+    }
+    if (sourceNode?.type === "gemini") {
+      return (sourceNode.data as { response?: string }).response || "(waiting for Gemini response...)";
     }
     return "";
   })() : null;
@@ -47,7 +50,7 @@ export const GeminiNode = memo(({ id, data, selected }: NodeProps) => {
       {/* Model selector */}
       <div className="mb-2">
         <select
-          value={nodeData.model || "gemini-1.5-flash-latest"}
+          value={nodeData.model || "gemini-2.5-flash"}
           onChange={(e) => update("model", e.target.value)}
           className="w-full text-[10px] border border-gray-200 rounded px-2 py-1 text-gray-600 outline-none focus:border-purple-300 bg-white"
         >

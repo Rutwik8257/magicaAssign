@@ -49,3 +49,8 @@ next-env.d.ts
 
 # temp scripts
 update-gemini-model.js
+
+# personal progress notes
+PROGRESS.md
+PROJECT_NOTES.md
+DEMO_SCRIPT.md
